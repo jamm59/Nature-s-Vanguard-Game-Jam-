@@ -18,8 +18,7 @@ var Ghost_Sprite = preload("res://scenes/ghostSprite.tscn")
 @onready var JUMP_VELOCITY : float = ((2.0 * jump_height) / jump_time_to_peak) * -1.0
 @onready var JUMP_GRAVITY : float = ((-2.0 * jump_height) / (jump_time_to_peak * jump_time_to_peak)) * -1.0
 @onready var FALL_GRAVITY : float = ((-2.0 * jump_height) / (jump_time_to_descent * jump_time_to_descent)) * -1.0
-@onready var TEMP_FALL_GRAVITY = FALL_GRAVITY
-
+@onready var FALL_GRAVITY_TEMP = FALL_GRAVITY
 
 # WEAPON
 @onready var left_weapon_position: Node2D = $LeftWeaponPosition
@@ -34,13 +33,13 @@ const SPEED_MULTIPLIER = 10
 var PlayerDirection = 1
 #var JUMP_VELOCITY = -400
 var friction: float = 40
-var acceleration: float = 50
-var currentPlayerState: PLAYER_STATE = PLAYER_STATE.IDLE
-var spriteInitialPosition: float
-var isAttacking: bool = false
 var playerDirection: int = 0
 var wasOnFloor: bool = false
-var prevState: PLAYER_STATE
+var isAttacking: bool = false
+var isWallSliding: bool = false
+var acceleration: float = 50
+var spriteInitialPosition: float
+var currentPlayerState: PLAYER_STATE = PLAYER_STATE.IDLE
 
 func getGravity() -> float:
 	return JUMP_GRAVITY if velocity.y < 0.0 else FALL_GRAVITY
@@ -81,6 +80,22 @@ func handlePlayerDashAnimation() -> void:
 		var time: float = (0.75 * index) / 5
 		ghosting(ghostSprite, time)
 	
+func wallSliding(delta: float) -> void:
+	if is_on_wall() and not is_on_floor():
+		if Input.get_axis("left", "right") != 0:
+			isWallSliding = true
+		else:
+			isWallSliding = false
+	else:
+		isWallSliding = false
+		
+	if isWallSliding:
+		FALL_GRAVITY = FALL_GRAVITY_TEMP / 3 * delta
+	else:
+		FALL_GRAVITY = FALL_GRAVITY_TEMP
+		#velocity.y = min(velocity.y, FALL_GRAVITY / 10)
+	
+		
 func handleInput(delta: float) -> void:
 	var dir = Input.get_axis("left", "right")
 	
@@ -101,18 +116,18 @@ func handleInput(delta: float) -> void:
 		currentPlayerState = PLAYER_STATE.MOVING_RIGHT
 		playerDirection = 1
 	
-	if Input.is_action_just_pressed("jump") and is_on_floor():
-		currentPlayerState = PLAYER_STATE.JUMP
+	if Input.is_action_just_pressed("jump"):
+		if is_on_floor():
+			currentPlayerState = PLAYER_STATE.JUMP
 	
-	if Input.is_action_just_pressed("dash"): # DASH IS INDEPENDENT OF OTHER EVENTS
-		currentPlayerState = PLAYER_STATE.DASH
-		
 	if not is_on_floor() and velocity.y > 0:
 		currentPlayerState = PLAYER_STATE.FALL
 	
 	if is_on_floor() and not wasOnFloor:
 		currentPlayerState = PLAYER_STATE.LAND
 		
+	if Input.is_action_just_pressed("dash"): # DASH IS INDEPENDENT OF OTHER EVENTS
+		currentPlayerState = PLAYER_STATE.DASH
 	wasOnFloor = is_on_floor()
 		
 func handleAnimationStateUpdate() -> void:
@@ -133,7 +148,7 @@ func handleAnimationStateUpdate() -> void:
 			velocity.x = move_toward(velocity.x, -1 * SPEED, acceleration)
 			animated_sprite_2d.flip_h = true
 		PLAYER_STATE.DASH:
-			audio_player.pitch_scale = randf_range(1, 1.5)
+			audio_player.pitch_scale = randf_range(0.5, 0.8)
 			audio_player.playing = true
 			handlePlayerDashAnimation()
 			velocity.x = playerDirection * SPEED * SPEED_MULTIPLIER
@@ -152,7 +167,7 @@ func handleWeaponPosition() -> void:
 	
 func _ready() -> void:
 	base_weapon.position = right_weapon_position.position
-	
+	#Engine.time_scale = 0.1
 	
 func _physics_process(delta: float) -> void:
 	# Get the input direction and handle the movement/deceleration.

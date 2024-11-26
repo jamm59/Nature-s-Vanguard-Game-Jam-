@@ -1,7 +1,10 @@
-[gd_scene load_steps=4 format=3 uid="uid://cei32lmo4pf5v"]
+[gd_scene load_steps=7 format=3 uid="uid://cei32lmo4pf5v"]
 
 [ext_resource type="Script" path="res://scripts/weapon.gd" id="1_d1nsb"]
 [ext_resource type="Texture2D" uid="uid://k70qlbuy6kue" path="res://assets/weapons/FantasyWeapons2D.png" id="2_i0kpu"]
+[ext_resource type="AudioStream" uid="uid://cgan6d8w05y36" path="res://assets/sounds/sword_equip.mp3" id="3_33q6u"]
+[ext_resource type="AudioStream" uid="uid://deujnmxcgme7t" path="res://assets/sounds/sword_unequip.mp3" id="4_5ivvc"]
+[ext_resource type="AudioStream" uid="uid://bs1i0obcab2um" path="res://assets/sounds/sword_attack.mp3" id="5_ryvkw"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_of7kk"]
 size = Vector2(56, 2)
@@ -28,3 +31,12 @@ region_rect = Rect2(10.3792, 897.205, 1330.97, 103.282)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_of7kk")
+
+[node name="AudioEquip" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("3_33q6u")
+
+[node name="AudioUnequip" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("4_5ivvc")
+
+[node name="AudioAttack" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("5_ryvkw")

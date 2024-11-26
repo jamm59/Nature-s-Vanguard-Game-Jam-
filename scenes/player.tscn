@@ -1,4 +1,4 @@
-[gd_scene load_steps=43 format=3 uid="uid://cp8ko7h2x5oea"]
+[gd_scene load_steps=41 format=3 uid="uid://cp8ko7h2x5oea"]
 
 [ext_resource type="Script" path="res://scripts/player.gd" id="1_arfj7"]
 [ext_resource type="PackedScene" uid="uid://cei32lmo4pf5v" path="res://scenes/weapon.tscn" id="4_quwbl"]
@@ -285,11 +285,6 @@ animations = [{
 radius = 7.27273
 height = 29.0909
 
-[sub_resource type="Gradient" id="Gradient_pig5i"]
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_j2cfo"]
-gradient = SubResource("Gradient_pig5i")
-
 [node name="Player" type="CharacterBody2D"]
 z_index = 1
 scale = Vector2(0.55, 0.55)
@@ -315,13 +310,6 @@ wait_time = 0.5
 [node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("8_gni2w")
 
-[node name="PointLight2D" type="PointLight2D" parent="."]
-visible = false
-position = Vector2(22, -26)
-scale = Vector2(1.15625, 0.875)
-shadow_enabled = true
-texture = SubResource("GradientTexture2D_j2cfo")
-
 [node name="RightWeaponPosition" type="Node2D" parent="."]
 position = Vector2(16.3636, -10.9091)
 
@@ -329,6 +317,7 @@ position = Vector2(16.3636, -10.9091)
 position = Vector2(-1.81818, -10.9091)
 
 [node name="BaseWeapon" parent="." instance=ExtResource("4_quwbl")]
+visible = false
 position = Vector2(16.3636, -10.9091)
 
 [connection signal="cameraShake" from="." to="." method="_on_camera_shake"]

@@ -2,6 +2,9 @@ class_name BaseWeapon
 extends Area2D
 
 @onready var sprite_2d: Sprite2D = $Sprite2D
+@onready var audio_equip: AudioStreamPlayer2D = $AudioEquip
+@onready var audio_unequip: AudioStreamPlayer2D = $AudioUnequip
+@onready var audio_attack: AudioStreamPlayer2D = $AudioAttack
 
 var originalScale: Vector2 = scale
 var originalPosition: Vector2 = global_position
@@ -14,6 +17,7 @@ func _ready() -> void:
 		self.hide()
 	else:
 		self.show()
+
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta: float) -> void:
 	if Input.is_action_just_pressed("attack"):
@@ -23,9 +27,11 @@ func _physics_process(delta: float) -> void:
 		if not weaponEquip:
 			self.show()
 			weaponEquip = true
+			audio_equip.play()
 		else:
 			self.hide()
 			weaponEquip = false
+			audio_unequip.play()
 	
 	var dir: int = Input.get_axis("left", "right")
 	if dir != 0:
@@ -34,11 +40,11 @@ func _physics_process(delta: float) -> void:
 	sprite_2d.flip_h = false if directionLeftOrRight == 1 else true
 
 func handleWeaponAttackAnimation() -> void:
-	
-	if isAttacking:
+	if isAttacking or not weaponEquip:
 		return 
 
 	isAttacking = true
+	audio_attack.play()
 	var AttackPower = 40
 	var stab_time_thrust: float = 0.07  # Time for forward thrust
 	var stab_time_return: float = 0.07  # Time to return
