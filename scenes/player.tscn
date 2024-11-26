@@ -322,8 +322,14 @@ scale = Vector2(1.15625, 0.875)
 shadow_enabled = true
 texture = SubResource("GradientTexture2D_j2cfo")
 
+[node name="RightWeaponPosition" type="Node2D" parent="."]
+position = Vector2(16.3636, -10.9091)
+
+[node name="LeftWeaponPosition" type="Node2D" parent="."]
+position = Vector2(-1.81818, -10.9091)
+
 [node name="BaseWeapon" parent="." instance=ExtResource("4_quwbl")]
-position = Vector2(23.6364, -7.27273)
+position = Vector2(16.3636, -10.9091)
 
 [connection signal="cameraShake" from="." to="." method="_on_camera_shake"]
 [connection signal="timeout" from="AttackTimer" to="." method="_on_attack_timer_timeout"]

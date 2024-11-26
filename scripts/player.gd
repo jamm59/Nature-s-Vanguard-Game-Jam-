@@ -21,6 +21,12 @@ var Ghost_Sprite = preload("res://scenes/ghostSprite.tscn")
 @onready var TEMP_FALL_GRAVITY = FALL_GRAVITY
 
 
+# WEAPON
+@onready var left_weapon_position: Node2D = $LeftWeaponPosition
+@onready var right_weapon_position: Node2D = $RightWeaponPosition
+@onready var base_weapon: BaseWeapon = $BaseWeapon
+
+
 signal cameraShake
 
 const SPEED = 120.0
@@ -77,6 +83,7 @@ func handlePlayerDashAnimation() -> void:
 	
 func handleInput(delta: float) -> void:
 	var dir = Input.get_axis("left", "right")
+	
 	if not is_on_floor():
 		velocity.y += getGravity() * delta
 		
@@ -94,12 +101,12 @@ func handleInput(delta: float) -> void:
 		currentPlayerState = PLAYER_STATE.MOVING_RIGHT
 		playerDirection = 1
 	
-	if Input.is_action_just_pressed("dash"): # DASH IS INDEPENDENT OF OTHER EVENTS
-		currentPlayerState = PLAYER_STATE.DASH
-	
 	if Input.is_action_just_pressed("jump") and is_on_floor():
 		currentPlayerState = PLAYER_STATE.JUMP
 	
+	if Input.is_action_just_pressed("dash"): # DASH IS INDEPENDENT OF OTHER EVENTS
+		currentPlayerState = PLAYER_STATE.DASH
+		
 	if not is_on_floor() and velocity.y > 0:
 		currentPlayerState = PLAYER_STATE.FALL
 	
@@ -135,10 +142,16 @@ func handleAnimationStateUpdate() -> void:
 				animated_sprite_2d.play("Idle")
 			velocity.x = move_toward(velocity.x, 0, friction)
 		
+func handleWeaponPosition() -> void:
+	var dir = Input.get_axis("left", "right")
+	
+	if dir == 1:
+		base_weapon.position = right_weapon_position.position
+	elif dir == -1:
+		base_weapon.position = left_weapon_position.position
 	
 func _ready() -> void:
-	pass
-	#Engine.time_scale = 0.1
+	base_weapon.position = right_weapon_position.position
 	
 	
 func _physics_process(delta: float) -> void:
@@ -146,4 +159,5 @@ func _physics_process(delta: float) -> void:
 	# As good practice, you should replace UI actions with custom gameplay actions.
 	handleInput(delta)
 	handleAnimationStateUpdate()
+	handleWeaponPosition()
 	move_and_slide()

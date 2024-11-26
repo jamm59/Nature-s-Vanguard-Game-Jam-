@@ -4,7 +4,6 @@ extends Node2D
 @onready var camera_shake_timer: Timer = $CameraShakeTimer
 @onready var restart_timer: Timer = $restartTimer
 
-
 var shakeAvailable: bool = false
 
 func _on_player_camera_shake() -> void:
