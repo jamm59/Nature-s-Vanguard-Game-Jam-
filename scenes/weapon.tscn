@@ -1,0 +1,22 @@
+[gd_scene load_steps=4 format=3 uid="uid://cei32lmo4pf5v"]
+
+[ext_resource type="Script" path="res://scripts/weapon.gd" id="1_d1nsb"]
+[ext_resource type="Texture2D" uid="uid://n2msaqy3bin1" path="res://assets/weapons/weapon.png" id="2_jn46c"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_4vkwx"]
+size = Vector2(5, 15.75)
+
+[node name="BaseWeapon" type="Area2D"]
+script = ExtResource("1_d1nsb")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(11, -19)
+rotation = 1.5708
+scale = Vector2(0.6, 0.6)
+texture = ExtResource("2_jn46c")
+centered = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(2, -4.875)
+rotation = 1.5708
+shape = SubResource("RectangleShape2D_4vkwx")
